@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# Environment Variables - NEVER commit secrets
+.env
+
+# IDE / Editor
+.vscode/
+.idea/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Stitch extracted themes (dev only)
+stitch_theme/
+stitch_theme_2/
+stitch_theme_3/
+*.zip
+
+# Test output files
+test_output.txt
+test_output_utf8.txt
+test_prompt.py
+test_prompt.txt
+
+# NOTE: chroma_db, data, chunks are intentionally TRACKED
+# so GitHub Actions can commit updated vectors back to the repo.

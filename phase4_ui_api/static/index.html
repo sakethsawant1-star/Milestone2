@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HDFC Mutual Fund FAQ Assistant</title>
+    <!-- Modern Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="chat-header">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <h1>HDFC Fund Assistant</h1>
+            </div>
+            <div class="disclaimer-badge">Facts-only. No investment advice.</div>
+        </header>
+
+        <!-- Main Chat Area -->
+        <main class="chat-main" id="chat-box">
+            <!-- Welcome Message -->
+            <div class="message bot-message intro-message">
+                <div class="avatar bot-avatar"></div>
+                <div class="message-content">
+                    <p>Welcome! 👋 I am an AI assistant strictly designed to answer factual questions about 6 specific HDFC Mutual Funds.</p>
+                    <p>I cannot provide investment advice. Try asking me a question or click one of the examples below to get started!</p>
+                </div>
+            </div>
+
+            <!-- Suggestion Chips -->
+            <div class="suggestions-container" id="suggestions">
+                <button class="suggestion-chip" onclick="sendQuery('What is the minimum SIP for the HDFC Small Cap Fund?')">
+                    <span>What is the minimum SIP for the HDFC Small Cap Fund?</span>
+                </button>
+                <button class="suggestion-chip" onclick="sendQuery('What is the exit load for HDFC Flexi Cap?')">
+                    <span>What is the exit load for HDFC Flexi Cap?</span>
+                </button>
+                <button class="suggestion-chip" onclick="sendQuery('What is the NAV of HDFC Mid-Cap Fund?')">
+                    <span>What is the NAV of HDFC Mid-Cap Fund?</span>
+                </button>
+            </div>
+        </main>
+
+        <!-- Input Area -->
+        <footer class="chat-footer">
+            <div class="input-wrapper">
+                <input type="text" id="user-input" placeholder="Ask a factual question about a fund..." autocomplete="off">
+                <button id="send-btn" onclick="handleSend()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const suggestionsContainer = document.getElementById('suggestions');
+
+        // Allow Enter key to send message
+        userInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                handleSend();
+            }
+        });
+
+        function formatBotResponse(text) {
+            // Very simple parser to bold "Citation:" and "Last updated from sources:"
+            let formatted = text.replace(/(Citation: .*?)(?=\n|$)/g, '<strong>$1</strong>');
+            formatted = formatted.replace(/(Last updated from sources: .*?)(?=\n|$)/g, '<em>$1</em>');
+            return formatted.replace(/\n/g, '<br>');
+        }
+
+        async function sendQuery(query) {
+            if (!query.trim()) return;
+
+            // Hide suggestions after first interaction
+            if (suggestionsContainer) {
+                suggestionsContainer.style.display = 'none';
+            }
+
+            // Append User Message
+            appendMessage(query, 'user-message');
+            userInput.value = '';
+
+            // Append Loading Bubble
+            const loadingId = 'loading-' + Date.now();
+            appendMessage('<div class="typing-indicator"><span></span><span></span><span></span></div>', 'bot-message', loadingId);
+            scrollToBottom();
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: query })
+                });
+                
+                const data = await response.json();
+                
+                // Remove Loading Bubble
+                document.getElementById(loadingId).remove();
+                
+                // Append Bot Response
+                appendMessage(formatBotResponse(data.response), 'bot-message');
+            } catch (error) {
+                document.getElementById(loadingId).remove();
+                appendMessage('Sorry, the server encountered an error. Please try again.', 'bot-message error-message');
+            }
+            scrollToBottom();
+        }
+
+        function handleSend() {
+            sendQuery(userInput.value);
+        }
+
+        function appendMessage(content, className, id = null) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${className}`;
+            if (id) msgDiv.id = id;
+
+            if (className.includes('bot-message')) {
+                msgDiv.innerHTML = `
+                    <div class="avatar bot-avatar"></div>
+                    <div class="message-content">${content}</div>
+                `;
+            } else {
+                msgDiv.innerHTML = `<div class="message-content">${content}</div>`;
+            }
+
+            chatBox.appendChild(msgDiv);
+        }
+
+        function scrollToBottom() {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
