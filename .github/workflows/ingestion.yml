@@ -6,10 +6,6 @@ on:
     - cron: '0 2 * * *'
   # Allow manual trigger from the GitHub Actions tab
   workflow_dispatch:
-  # Trigger on push to master (bootstraps workflow_dispatch availability)
-  push:
-    branches:
-      - master
 
 jobs:
   run-ingestion:
