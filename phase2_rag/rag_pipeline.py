@@ -39,8 +39,21 @@ class RAGPipeline:
     def __init__(self):
         # Initialize Groq Client
         api_key = os.getenv("GROQ_API_KEY")
-        if not api_key or api_key == "your_groq_key_here":
-            raise ValueError("Invalid GROQ_API_KEY. Please set it in the .env file.")
+        if not api_key:
+            # Debug info: check if any variables are loaded
+            env_keys = list(os.environ.keys())
+            found_vars = [k for k in env_keys if "GROQ" in k]
+            raise ValueError(
+                f"GROQ_API_KEY not found in environment. "
+                f"Found these similar variables: {found_vars}. "
+                f"Total env vars: {len(env_keys)}"
+            )
+        
+        # Clean the key (remove quotes or spaces if accidentally added in Railway UI)
+        api_key = api_key.strip().strip("'").strip('"')
+        
+        if api_key == "your_groq_key_here" or len(api_key) < 10:
+            raise ValueError(f"The GROQ_API_KEY found looks invalid (length: {len(api_key)}). Please check Railway variables.")
         
         self.groq_client = groq.Groq(api_key=api_key)
         self.model_name = 'llama-3.3-70b-versatile'
