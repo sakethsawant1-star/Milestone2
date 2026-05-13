@@ -40,13 +40,11 @@ class RAGPipeline:
         # Initialize Groq Client
         api_key = os.getenv("GROQ_API_KEY")
         if not api_key:
-            # Debug info: check if any variables are loaded
-            env_keys = list(os.environ.keys())
-            found_vars = [k for k in env_keys if "GROQ" in k]
+            # Debug info: list ALL variable names (no values)
+            env_keys = sorted(list(os.environ.keys()))
             raise ValueError(
-                f"GROQ_API_KEY not found in environment. "
-                f"Found these similar variables: {found_vars}. "
-                f"Total env vars: {len(env_keys)}"
+                f"GROQ_API_KEY not found. "
+                f"All available env vars: {env_keys}"
             )
         
         # Clean the key (remove quotes or spaces if accidentally added in Railway UI)
