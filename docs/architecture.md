@@ -67,7 +67,24 @@ Based on the problem statement requirements, here is the detailed phase-wise arc
 
 * **Frontend Theme:** Implements a dark-mode deep space grid with a neon-glow primary color scheme (Groww's `#00d09c`).
 * **Design Features:** Incorporates a static starfield, glassmorphic chat panels, a retro terminal input field, and a persistent "Facts-only" disclaimer badge.
-* **Tech Stack:** Vanilla HTML/JS with Tailwind CSS loaded via CDN, served directly via the FastAPI backend (`phase5_stitch_ui`).
+* **Tech Stack:** Vanilla HTML/JS with Tailwind CSS loaded via CDN.
+
+## Phase 6: Production Deployment
+**Objective:** Deploy the frontend and backend as separate, independently scalable cloud services.
+
+### Frontend → Vercel
+* **Directory:** `frontend/`
+* **Deployment:** Static site hosted on Vercel. Zero-config deployment via `vercel.json`.
+* **Config:** `frontend/vercel.json` routes all traffic to `index.html`.
+* **Backend Integration:** `BACKEND_URL` constant in `frontend/index.html` must be updated to the Railway backend URL after backend deployment.
+
+### Backend → Railway
+* **Directory:** `backend/`
+* **Entry Point:** `backend/main.py` — FastAPI app with CORS middleware enabled.
+* **Config:** `railway.toml` sets the start command; `Procfile` as fallback.
+* **Environment Variables on Railway:** `GROQ_API_KEY` must be set in Railway's environment variable settings.
+* **CORS:** Configured to allow requests from the Vercel frontend domain.
+* **Health Check:** `GET /` returns API status; `POST /api/chat` handles all queries.
 
 ## Architecture Flowchart
 

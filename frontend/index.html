@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Groww AI Navigator | HDFC Mutual Fund Assistant</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Shared Tailwind Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#00533c",
+                    "on-primary": "#003828",
+                    "on-error-container": "#ffdad6",
+                    "inverse-on-surface": "#2f3034",
+                    "tertiary-fixed": "#ffdad8",
+                    "tertiary-fixed-dim": "#ffb3af",
+                    "primary-fixed-dim": "#2fe0aa",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-primary-fixed": "#002116",
+                    "surface-dim": "#111317",
+                    "outline-variant": "#3c4a43",
+                    "surface-tint": "#2fe0aa",
+                    "secondary": "#aec6ff",
+                    "surface-container-high": "#282a2e",
+                    "on-surface": "#e2e2e7",
+                    "surface-variant": "#333539",
+                    "surface-container-lowest": "#0c0e12",
+                    "primary": "#44edb7",
+                    "on-secondary-fixed": "#001a43",
+                    "primary-fixed": "#59fdc5",
+                    "tertiary": "#ffc5c2",
+                    "secondary-fixed-dim": "#aec6ff",
+                    "error-container": "#93000a",
+                    "tertiary-container": "#ff9d99",
+                    "surface-container-highest": "#333539",
+                    "secondary-container": "#0c4393",
+                    "on-tertiary-container": "#960019",
+                    "on-surface-variant": "#bacac1",
+                    "surface-container": "#1e2023",
+                    "on-tertiary-fixed": "#410006",
+                    "inverse-primary": "#006c4f",
+                    "on-secondary-container": "#93b4ff",
+                    "on-secondary": "#002e6b",
+                    "error": "#ffb4ab",
+                    "on-tertiary-fixed-variant": "#930019",
+                    "on-primary-fixed-variant": "#00513b",
+                    "inverse-surface": "#e2e2e7",
+                    "outline": "#85948c",
+                    "on-tertiary": "#68000e",
+                    "on-error": "#690005",
+                    "on-background": "#e2e2e7",
+                    "background": "#111317",
+                    "surface": "#111317",
+                    "surface-bright": "#37393d",
+                    "surface-container-low": "#1a1c1f",
+                    "on-secondary-fixed-variant": "#0c4393",
+                    "primary-container": "#00d09c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "lg": "40px",
+                    "gutter": "16px",
+                    "md": "24px",
+                    "margin-mobile": "20px",
+                    "base": "8px",
+                    "xs": "4px",
+                    "xl": "64px",
+                    "sm": "12px",
+                    "margin-desktop": "120px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Space Grotesk"],
+                    "label-md": ["Space Grotesk"],
+                    "body-lg": ["Space Grotesk"],
+                    "headline-lg": ["Space Grotesk"],
+                    "headline-md": ["Space Grotesk"],
+                    "body-md": ["Space Grotesk"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #05070A;
+            color: #e2e2e7;
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .deep-space-grid {
+            background-image: 
+                linear-gradient(rgba(192, 192, 192, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(192, 192, 192, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        #dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: #05070A;
+            overflow: hidden;
+        }
+
+        .neon-glow-primary {
+            box-shadow: 0 0 15px rgba(0, 208, 156, 0.4);
+        }
+
+        .scanning-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 0, 51, 0.5);
+            top: 0;
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            from { top: 0; }
+            to { top: 100%; }
+        }
+
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(225, 225, 230, 0.1);
+        }
+
+        .terminal-cursor::after {
+            content: '_';
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            from, to { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Chat Specific Styles */
+        #chat-container {
+            scroll-behavior: smooth;
+        }
+        
+        #chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        #chat-container::-webkit-scrollbar-thumb {
+            background: #333539;
+            border-radius: 10px;
+        }
+
+        .message-bubble {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 8px 4px;
+        }
+
+        .typing-indicator span {
+            width: 6px;
+            height: 6px;
+            background: #bacac1;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="deep-space-grid">
+<!-- Dynamic Background Layer -->
+<div id="dynamic-bg"><canvas class="absolute inset-0 w-full h-full" id="starfield-canvas"></canvas>
+<script>
+    const canvas = document.getElementById('starfield-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width, height, particles;
+    const particleCount = 1500;
+    const mouse = { x: -1000, y: -1000 };
+
+    function init() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+
+        particles = [];
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                z: Math.random() * width,
+                size: Math.random() * 1.5 + 0.5,
+                color: Math.random() > 0.9 ? '#00D09C' : '#FFFFFF',
+                opacity: Math.random() * 0.5 + 0.2,
+                speed: Math.random() * 0.5 + 0.1
+            });
+        }
+    }
+
+    function draw() {
+        ctx.fillStyle = '#05070A';
+        ctx.fillRect(0, 0, width, height);
+
+        particles.forEach(p => {
+            // 3D Drifting Effect
+            p.z -= p.speed * 2;
+            if (p.z <= 0) p.z = width;
+
+            const x = (p.x - width / 2) * (width / p.z) + width / 2;
+            const y = (p.y - height / 2) * (width / p.z) + height / 2;
+
+            // Mouse Reactivity
+            const dx = x - mouse.x;
+            const dy = y - mouse.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            let offset = 0;
+            if (dist < 200) {
+                offset = (200 - dist) / 10;
+            }
+
+            const size = p.size * (width / p.z);
+            
+            ctx.beginPath();
+            ctx.arc(x + (dx/dist * offset), y + (dy/dist * offset), size, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.opacity * (1 - p.z / width);
+            ctx.fill();
+        });
+
+        requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', init);
+    window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+    });
+
+    init();
+    draw();
+</script></div>
+
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-lg py-sm bg-background/80 dark:bg-background/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-[0_0_15px_rgba(68,237,183,0.1)]">
+<div class="flex items-center gap-md">
+<!-- Groww Logo SVG - transparent background, matches brand icon exactly -->
+<svg width="36" height="36" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <clipPath id="circle-clip">
+    <circle cx="100" cy="100" r="100"/>
+  </clipPath>
+  <g clip-path="url(#circle-clip)">
+    <!-- Blue/purple upper background -->
+    <circle cx="100" cy="100" r="100" fill="#5B5BE8"/>
+    <!-- Teal layered chevrons from bottom -->
+    <!-- Layer 3 (darkest/bottom) -->
+    <polygon points="0,200 0,140 50,115 100,140 150,115 200,140 200,200" fill="#00A87A"/>
+    <!-- Layer 2 -->
+    <polygon points="0,200 0,125 50,100 100,125 150,100 200,125 200,200" fill="#00C491"/>
+    <!-- Layer 1 (top/lightest) -->
+    <polygon points="0,200 0,110 50,85 100,110 150,85 200,110 200,200" fill="#00D09C"/>
+  </g>
+</svg>
+<span class="text-headline-md font-headline-md font-bold text-on-surface dark:text-on-surface">Groww AI Navigator</span>
+</div>
+<div class="hidden md:flex items-center gap-md">
+<div class="relative group ml-base">
+<div class="bg-[#FF0033] px-2 py-0.5 rounded-sm relative overflow-hidden">
+<div class="scanning-line"></div>
+<span class="text-white text-label-sm font-label-sm relative z-10">FACTS ONLY. NO ADVICE.</span>
+</div>
+</div>
+</div>
+</header>
+
+<!-- SideNavBar (Desktop Only) -->
+<aside class="fixed left-0 top-0 h-full hidden md:flex flex-col pt-20 pb-8 px-4 bg-surface-container/30 backdrop-blur-xl border-r border-outline-variant/20 w-64 z-40">
+<nav class="flex-grow space-y-xs mt-md">
+<a class="flex items-center gap-sm px-md py-sm bg-secondary-container/30 text-primary border-r-2 border-primary hover:bg-surface-variant/30 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-label-md text-label-md">Navigator</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:bg-surface-variant/30 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-md text-label-md">Chat History</span>
+</a>
+</nav>
+<div class="mt-auto space-y-xs">
+<div class="text-xs text-on-surface-variant opacity-60 px-md py-sm">Powered by Llama-3-70B on Groq</div>
+</div>
+</aside>
+
+<!-- Main Content Area -->
+<main class="md:ml-64 pt-24 pb-20 md:pb-8 px-md flex flex-col items-center justify-center min-h-screen">
+<!-- Glassmorphic Global Container -->
+<div class="w-full max-w-4xl mx-auto flex flex-col gap-xl glass-panel p-lg rounded-3xl shadow-2xl">
+
+<!-- Greeting / Chat History Container -->
+<div id="chat-container" class="flex flex-col gap-md overflow-y-auto max-h-[45vh] min-h-[120px] pr-1">
+  <!-- Welcome Message -->
+  <div class="message-bubble text-center space-y-md">
+    <div class="inline-block px-md py-xs bg-primary-container/30 text-primary rounded-full text-label-sm font-label-sm border border-primary/20">
+      AI AGENT ONLINE
+    </div>
+    <h2 class="text-headline-lg font-headline-lg text-on-surface">ðŸ‘‹ Welcome to the Groww Mutual Fund Assistant</h2>
+    <p class="text-body-md font-body-md text-on-surface-variant max-w-xl mx-auto">
+      I can answer factual questions about 6 HDFC Mutual Fund schemes â€” NAV, exit load, minimum SIP, AUM, and more. Facts only, no investment advice.
+    </p>
+  </div>
+</div>
+
+<!-- Quick Action Chips -->
+<div id="suggestions" class="flex flex-wrap justify-center gap-md">
+  <button onclick="sendQuery('What is the minimum SIP for the HDFC Small Cap Fund?')" class="glass-panel px-md py-sm rounded-xl flex items-center gap-base text-secondary border border-secondary/20 hover:bg-secondary/10 hover:scale-105 transition-all">
+    <span class="material-symbols-outlined text-[20px]">analytics</span>
+    <span class="font-label-md text-label-md">HDFC Small Cap â€” Min SIP?</span>
+  </button>
+  <button onclick="sendQuery('What is the exit load for HDFC Flexi Cap?')" class="glass-panel px-md py-sm rounded-xl flex items-center gap-base text-secondary border border-secondary/20 hover:bg-secondary/10 hover:scale-105 transition-all">
+    <span class="material-symbols-outlined text-[20px]">query_stats</span>
+    <span class="font-label-md text-label-md">HDFC Flexi Cap â€” Exit Load?</span>
+  </button>
+  <button onclick="sendQuery('What is the NAV of HDFC Gold ETF fund of fund?')" class="glass-panel px-md py-sm rounded-xl flex items-center gap-base text-secondary border border-secondary/20 hover:bg-secondary/10 hover:scale-105 transition-all">
+    <span class="material-symbols-outlined text-[20px]">currency_rupee</span>
+    <span class="font-label-md text-label-md">HDFC Gold ETF â€” NAV?</span>
+  </button>
+  <button onclick="sendQuery('What is the AUM of HDFC Mid Cap Fund?')" class="glass-panel px-md py-sm rounded-xl flex items-center gap-base text-secondary border border-secondary/20 hover:bg-secondary/10 hover:scale-105 transition-all">
+    <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+    <span class="font-label-md text-label-md">HDFC Mid Cap â€” AUM?</span>
+  </button>
+</div>
+
+<!-- Central Glass Input -->
+<div class="glass-panel w-full p-md rounded-xl neon-glow-primary border border-primary/40 relative group">
+  <div class="flex items-center gap-md">
+    <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">terminal</span>
+    <input id="user-input" class="w-full bg-transparent border-none focus:ring-0 text-body-lg font-body-lg text-on-surface placeholder:text-on-surface-variant/40" placeholder="Ask about NAV, exit load, AUM, SIP..." type="text" autocomplete="off"/>
+    <button onclick="handleSend()" class="w-12 h-12 flex items-center justify-center bg-primary text-on-primary rounded-xl hover:scale-110 transition-transform">
+      <span class="material-symbols-outlined">send</span>
+    </button>
+  </div>
+  <div class="absolute bottom-4 left-16 h-0.5 w-4 bg-primary animate-pulse opacity-0 group-focus-within:opacity-100"></div>
+</div>
+
+</div>
+</main>
+
+<script>
+    const chatContainer = document.getElementById('chat-container');
+    const userInput = document.getElementById('user-input');
+    const suggestionsContainer = document.getElementById('suggestions');
+
+    // Allow Enter key to send message
+    userInput.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            handleSend();
+        }
+    });
+
+    function formatBotResponse(text) {
+        let formatted = text.replace(/(Citation: .*?)(?=\n|$)/g, '<span class="text-primary font-mono text-xs block mt-2">$1</span>');
+        formatted = formatted.replace(/(Last updated from sources: .*?)(?=\n|$)/g, '<span class="text-on-surface-variant font-mono text-xs block opacity-70">$1</span>');
+        return formatted.replace(/\n/g, '<br>');
+    }
+
+    // ── Railway Backend URL ──────────────────────────────────────────────────
+    // Replace this with your actual Railway deployment URL after deploying the backend.
+    // Example: 'https://your-app-name.up.railway.app'
+    const BACKEND_URL = 'https://YOUR_RAILWAY_BACKEND_URL';
+
+    async function sendQuery(query) {
+        if (!query.trim()) return;
+
+        // Hide suggestions after first interaction
+        if (suggestionsContainer) {
+            suggestionsContainer.style.display = 'none';
+        }
+
+        // Append User Message
+        appendUserMessage(query);
+        userInput.value = '';
+
+        // Append Loading Bubble
+        const loadingId = 'loading-' + Date.now();
+        appendBotMessage('<div class="typing-indicator"><span></span><span></span><span></span></div>', loadingId);
+        scrollToBottom();
+
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/chat`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: query })
+            });
+            
+            const data = await response.json();
+            
+            // Remove Loading Bubble
+            document.getElementById(loadingId).remove();
+            
+            // Append Bot Response
+            appendBotMessage(formatBotResponse(data.response));
+        } catch (error) {
+            document.getElementById(loadingId).remove();
+            appendBotMessage('<span class="text-error">System Error: Connection to Groq LPU failed. Please try again.</span>');
+        }
+        scrollToBottom();
+    }
+
+    function handleSend() {
+        sendQuery(userInput.value);
+    }
+
+    function appendUserMessage(content) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'message-bubble flex justify-end mb-6';
+        msgDiv.innerHTML = `
+            <div class="bg-primary text-on-primary px-5 py-3 rounded-2xl rounded-tr-sm max-w-[80%] shadow-[0_0_15px_rgba(68,237,183,0.2)]">
+                <p class="font-body-md text-sm">${content}</p>
+            </div>
+        `;
+        chatContainer.appendChild(msgDiv);
+    }
+
+    function appendBotMessage(content, id = null) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'message-bubble flex gap-sm bg-surface-bright/40 p-4 rounded-xl border border-outline-variant/30 mb-6 max-w-[90%]';
+        if (id) msgDiv.id = id;
+
+        msgDiv.innerHTML = `
+            <span class="material-symbols-outlined text-primary text-[24px]">smart_toy</span>
+            <div class="text-on-surface font-body-md text-sm leading-relaxed w-full">
+                ${content}
+            </div>
+        `;
+        chatContainer.appendChild(msgDiv);
+    }
+
+    function scrollToBottom() {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+</script>
+</body>
+</html>
