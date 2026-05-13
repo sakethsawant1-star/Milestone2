@@ -13,7 +13,11 @@ except Exception:
     pass
 
 # Load environment variables
-load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
+env_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+if os.path.exists(env_path):
+    load_dotenv(env_path)
+else:
+    load_dotenv() # Fallback to system environment variables
 
 # Constants
 # Use absolute path for DB_DIR to be safe on different environments

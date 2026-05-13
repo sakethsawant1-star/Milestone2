@@ -20,10 +20,10 @@ async def lifespan(app: FastAPI):
     global pipeline, classifier, startup_error
     try:
         print("Initializing RAG Pipeline and Guardrails...")
-        # Check for API Key
-        api_key = os.getenv("GROQ_API_KEY")
-        if not api_key:
-            raise ValueError("GROQ_API_KEY environment variable is missing.")
+        
+        # Try loading .env if it exists, otherwise rely on environment variables
+        from dotenv import load_dotenv
+        load_dotenv() 
             
         from phase2_rag.rag_pipeline import RAGPipeline
         from phase3_guardrails.guardrails import IntentClassifier
