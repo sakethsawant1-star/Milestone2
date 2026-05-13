@@ -69,22 +69,41 @@ Based on the problem statement requirements, here is the detailed phase-wise arc
 * **Design Features:** Incorporates a static starfield, glassmorphic chat panels, a retro terminal input field, and a persistent "Facts-only" disclaimer badge.
 * **Tech Stack:** Vanilla HTML/JS with Tailwind CSS loaded via CDN.
 
-## Phase 6: Production Deployment
-**Objective:** Deploy the frontend and backend as separate, independently scalable cloud services.
+## Phase 6: Production Deployment (Finalized)
 
-### Frontend → Vercel
-* **Directory:** `frontend/`
-* **Deployment:** Static site hosted on Vercel. Zero-config deployment via `vercel.json`.
-* **Config:** `frontend/vercel.json` routes all traffic to `index.html`.
-* **Backend Integration:** `BACKEND_URL` constant in `frontend/index.html` must be updated to the Railway backend URL after backend deployment.
+The application has been successfully decoupled and deployed as a distributed system:
 
-### Backend → Railway
-* **Directory:** `backend/`
-* **Entry Point:** `backend/main.py` — FastAPI app with CORS middleware enabled.
-* **Config:** `railway.toml` sets the start command; `Procfile` as fallback.
-* **Environment Variables on Railway:** `GROQ_API_KEY` must be set in Railway's environment variable settings.
-* **CORS:** Configured to allow requests from the Vercel frontend domain.
-* **Health Check:** `GET /` returns API status; `POST /api/chat` handles all queries.
+### 1. Frontend (Vercel)
+- **Deployment Type**: Static Site
+- **Live URL**: [https://milestone2-tan-two.vercel.app](https://milestone2-tan-two.vercel.app)
+- **Key Features**: 
+    - Retro Space UI with glassmorphic components.
+    - Asynchronous communication with the Railway backend.
+    - Character encoding optimized for production.
+
+### 2. Backend (Railway)
+- **Deployment Type**: FastAPI (Python)
+- **Live URL**: [https://web-production-bdd61.up.railway.app](https://web-production-bdd61.up.railway.app)
+- **Infrastructure**:
+    - **Nixpacks**: Auto-detects Python environment from root `requirements.txt`.
+    - **Procfile**: Defines the production runtime command.
+    - **CORS**: Configured to allow cross-origin requests from the Vercel domain.
+    - **Lifespan Management**: Handles high-memory model loading (SentenceTransformers) and ChromaDB initialization.
+
+### 3. Automated Ingestion (GitHub Actions)
+- **Cron**: Daily at 02:00 UTC.
+- **Workflow**: Scrapes Groww URLs, updates `chroma_db/`, and commits changes directly back to the repository.
+- **Sync**: Railway auto-redeploys on every commit, ensuring the backend always has the latest vector data.
+
+---
+
+## Technical Stack Summary
+- **Frontend**: HTML5, Vanilla JavaScript, TailwindCSS (CDN), Vercel.
+- **Backend**: FastAPI, Uvicorn, Railway.
+- **Vector DB**: ChromaDB (Embedded).
+- **LLM**: Llama-3.3-70B-Versatile (via Groq Cloud).
+- **Embeddings**: BAAI/bge-small-en-v1.5.
+
 
 ## Architecture Flowchart
 
