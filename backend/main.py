@@ -14,15 +14,20 @@ pipeline = None
 classifier = None
 startup_error = None
 
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Initialize the AI pipeline on startup."""
     global pipeline, classifier, startup_error
     try:
         print("Initializing RAG Pipeline and Guardrails...")
+        # Check for API Key
+        api_key = os.getenv("GROQ_API_KEY")
+        if not api_key:
+            raise ValueError("GROQ_API_KEY environment variable is missing.")
+            
         from phase2_rag.rag_pipeline import RAGPipeline
-        from phase3_guardrails.guardrails import IntentClassifier, safe_answer_query
+        from phase3_guardrails.guardrails import IntentClassifier
+        
         pipeline = RAGPipeline()
         classifier = IntentClassifier(pipeline.groq_client)
         print("Backend ready!")
@@ -31,7 +36,6 @@ async def lifespan(app: FastAPI):
         print(f"STARTUP ERROR: {e}")
         traceback.print_exc()
     yield
-
 
 app = FastAPI(title="Groww Mutual Fund Assistant API", lifespan=lifespan)
 
@@ -44,21 +48,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 class ChatRequest(BaseModel):
     query: str
 
-
 class ChatResponse(BaseModel):
     response: str
-
 
 @app.get("/")
 async def health_check():
     if startup_error:
         return {"status": "error", "detail": startup_error}
+    if pipeline is None:
+        return {"status": "initializing", "detail": "Pipeline is loading..."}
     return {"status": "Groww Mutual Fund Assistant API is running"}
-
 
 @app.post("/api/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
@@ -68,39 +70,10 @@ async def chat_endpoint(request: ChatRequest):
             detail=f"Backend not ready. Startup error: {startup_error}"
         )
     from phase3_guardrails.guardrails import safe_answer_query
-    answer = safe_answer_query(request.query, pipeline, classifier)
-    return ChatResponse(response=answer)
-
-# Use ["*"] for testing; restrict to your exact Vercel domain in production.
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],   # Update to your Vercel URL in production
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Initialize AI pipeline on startup
-print("Initializing RAG Pipeline and Guardrails...")
-pipeline = RAGPipeline()
-classifier = IntentClassifier(pipeline.groq_client)
-print("Backend ready!")
-
-
-class ChatRequest(BaseModel):
-    query: str
-
-
-class ChatResponse(BaseModel):
-    response: str
-
-
-@app.get("/")
-async def health_check():
-    return {"status": "Groww Mutual Fund Assistant API is running"}
-
-
-@app.post("/api/chat", response_model=ChatResponse)
-async def chat_endpoint(request: ChatRequest):
-    answer = safe_answer_query(request.query, pipeline, classifier)
-    return ChatResponse(response=answer)
+    try:
+        answer = safe_answer_query(request.query, pipeline, classifier)
+        return ChatResponse(response=answer)
+    except Exception as e:
+        print(f"CHAT ERROR: {e}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))

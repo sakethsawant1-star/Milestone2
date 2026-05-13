@@ -6,13 +6,19 @@ import chromadb
 from sentence_transformers import SentenceTransformer
 
 # Fix Windows printing Unicode
-sys.stdout.reconfigure(encoding='utf-8')
+try:
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8')
+except Exception:
+    pass
 
 # Load environment variables
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 # Constants
-DB_DIR = os.path.join(os.path.dirname(__file__), '..', 'phase1_ingestion', 'chroma_db')
+# Use absolute path for DB_DIR to be safe on different environments
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DB_DIR = os.path.join(BASE_DIR, 'phase1_ingestion', 'chroma_db')
 COLLECTION_NAME = "groww_mutual_funds"
 
 # List of known schemes
